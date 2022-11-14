@@ -137,6 +137,7 @@ const RegisterView = () => {
               className="border border-gray-500 px-1 rounded outline-none"
               type="name"
               name="email"
+              autoComplete="on"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.email}
@@ -147,6 +148,7 @@ const RegisterView = () => {
               className="border border-gray-500 px-1 rounded outline-none"
               type="password"
               name="password"
+              autoComplete="off"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}
