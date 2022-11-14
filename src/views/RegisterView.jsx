@@ -30,7 +30,7 @@ const RegisterView = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user)
+        console.log(user);
         setRegisteredEmail(true);
         handleReset();
       })
@@ -45,6 +45,30 @@ const RegisterView = () => {
     }, 1000);
   };
 
+  const finalRender = () => {
+    if (isDisable) {
+      return (
+        <div className="mt-2">
+          <Spinner />
+        </div>
+      );
+    } else if (usedEmail) {
+      return (
+        <div className="text-white mt-2 text-red-500">
+          Email en uso. Utilice otro.
+        </div>
+      );
+    } else if (registeredEmail) {
+      return (
+        <div className="text-white mt-2 text-green-500">
+          Usuario registrado con exito.
+        </div>
+      );
+    } else {
+      return <div className="min-h-[24px] min-w-[20px] mt-2"></div>;
+    }
+  };
+
   return (
     <div className="mt-36 flex justify-center">
       <Formik
@@ -54,7 +78,7 @@ const RegisterView = () => {
           if (!values.email) {
             errors.email = (
               <p className="text-white mt-2 text-red-500 absolute top-[141px]">
-                Campo requerido
+                Campo requerido.
               </p>
             );
           } else if (
@@ -62,33 +86,39 @@ const RegisterView = () => {
           ) {
             errors.email = (
               <p className="text-white mt-2 text-red-500 absolute top-[141px]">
-                Formato email erróneo
+                Formato email erróneo.
               </p>
             );
           }
           if (!values.password) {
             errors.password = (
               <p className="text-white mt-2 text-red-500 absolute top-[234px]">
-                Campo requerido
+                Campo requerido.
               </p>
             );
           } else if (values.password.length < 10) {
             errors.password = (
               <p className="text-white mt-2 text-red-500 absolute top-[234px]">
-                Debe contener al menos 10 caracteres{" "}
+                Debe contener al menos 10 caracteres.
+              </p>
+            );
+          } else if (values.password.length > 25) {
+            errors.password = (
+              <p className="text-white mt-2 text-red-500 absolute top-[234px]">
+                Debe contener como máximo 25 caracteres.
               </p>
             );
           }
           if (!values.repeatPassword) {
             errors.repeatPassword = (
               <p className="text-white mt-2 text-red-500 absolute top-[328px]">
-                Campo requerido
+                Campo requerido.
               </p>
             );
           } else if (values.password !== values.repeatPassword) {
             errors.repeatPassword = (
               <p className="text-white mt-2 text-red-500 absolute top-[328px]">
-                Las contraseñas deben coincidir
+                Las contraseñas deben coincidir.
               </p>
             );
           }
@@ -150,34 +180,14 @@ const RegisterView = () => {
               <button
                 type="submit"
                 disabled={isDisable}
-                className={`mt-12 w-[60%] py-1 rounded bg-blue-500 text-white ${
+                className={`mt-12 w-[60%] py-1 rounded bg-blue-500 text-white hover:text-yellow-100 ${
                   isDisable ? "opacity-50" : "opacity-100"
                 }`}
               >
                 Registrar Usuario
               </button>
-              {isDisable ? (
-                <div className="mt-2">
-                  <Spinner />
-                </div>
-              ) : (
-                <div className="min-h-[24px] min-w-[20px] mt-2"></div>
-              )}
-              {usedEmail && !isDisable ? (
-                <div className="text-white mt-2 text-red-500 absolute top-[84px]">
-                  Email en uso. Utilice otro.
-                </div>
-              ) : (
-                <div className="min-h-[24px] min-w-[20px] mt-2 absolute top-[84px]"></div>
-              )}
 
-              {registeredEmail && !isDisable && !usedEmail ? (
-                <div className="text-white mt-2 text-green-500 absolute top-[84px]">
-                  Usuario registrado con exito.
-                </div>
-              ) : (
-                <div className="min-h-[24px] min-w-[20px] mt-2 absolute top-[84px]"></div>
-              )}
+              {finalRender()}
             </div>
           </form>
         )}

@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { SiFirebase } from "react-icons/si";
 import { BsCircleFill } from "react-icons/bs";
+import { getAuth, signOut } from "firebase/auth";
+import { UserContext } from "../../context/UserContext";
 
 const Navbar = () => {
+  const { usuario, setUsuario } = useContext(UserContext);
+  const auth = getAuth();
+
+  const handleLogOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUsuario(null);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="flex items-center justify-between h-20 w-full bg-gray-200 shadow-lg px-20 fixed top-0 text-2xl text-green-600">
       <Link to="/" className="w-52">
@@ -17,7 +32,7 @@ const Navbar = () => {
       <ol className="flex flex-row gap-6">
         <li>
           <Link to="/" className="hover:text-red-500">
-            Users
+            User
           </Link>
         </li>
         <li>
@@ -30,13 +45,29 @@ const Navbar = () => {
             Register
           </Link>
         </li>
+        {usuario && (
+          <li>
+            <button onClick={handleLogOut}>Logout</button>
+          </li>
+        )}
       </ol>
 
       <div className="flex items-center justify-center w-52 gap-4">
-        <span>User logged</span>
-        <span className="flex items-center blur-[1px]">
-          <BsCircleFill />
-        </span>
+        {usuario ? (
+          <div className="flex flex-row gap-4">
+            <span>User logged</span>
+            <span className="flex items-center blur-[1px]">
+              <BsCircleFill />
+            </span>
+          </div>
+        ) : (
+          <div className="text-red-600 flex flex-row gap-4">
+            <span>Desconectado</span>
+            <span className="flex items-center blur-[1px]">
+              <BsCircleFill />
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
